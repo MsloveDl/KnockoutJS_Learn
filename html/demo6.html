@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>demo6</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <!-- visible属性的绑定 -->
+    <!-- visible接收一个bool属性的值, 控制控件是否显示, 当值绑定到监控属性的时候可随属性变化进行绘制,
+        若绑定单一值(直接绑定true或false)则不可根据变化重新绘制 -->
+    <div class="visible">
+        <h1>visible属性绑定</h1>
+        <p data-bind="visible: shouldShow">This message is show or hidden ?</p>
+        <button data-bind="click: showMessage">show</button>
+        <button data-bind="click: hiddenMessage">hidden</button>
+    </div>
+
+    <hr />
+    <!-- text属性的绑定 -->
+    <!-- Knockout将参数值设置在元素的innerText(IE)或textContent(FF, Chrome)属性上. 原来的文本内容将被覆盖.
+        如果参数绑定observable监控属性, 那元素的text文本根据属性变化而更新, 如果不是则只绑定一次.
+        如果传入的不是字符串, 则调用type.toString()进行等价转换. 根据个人测试, 该属性对于IE6支持相当不好.-->
+    <div class="text">
+        <h1>text属性绑定</h1>
+        The item is <span data-bind="text: priceRating"></span>
+    </div>
+
+    <hr />
+    <!-- html属性的绑定 -->
+    <!-- 将html绑定到DOM元素上, 类似于innerHTML方法...... 
+        很容易引起脚本注入攻击的一个地方. 不建议使用这个功能-->
+    <div class="html">
+        <h1>html属性绑定</h1>
+        <div data-bind="html: details"></div>
+    </div>
+
+    <hr />
+    <!-- css属性的绑定 -->
+    <!-- css绑定是添加或删除一个或多个class到DOM元素上. 
+        看上去是很有用的一个功能, 比如当数字变成负数时高亮显示.
+        该例的效果是当值小于0的时候将profitWarning的值绑定到class上-->
+    <div class="css">
+        <h1>css属性绑定</h1>
+        <div data-bind="css: {profitWarning: currentProfit() < 0}">
+            Profit Informating.
+        </div>
+    </div>
+
+    <hr />
+    <!-- attr属性绑定 -->
+    <!-- 可以利用这个形式来设定任何DOM元素的属性值, 比如img的src属性, 不错的功能 -->
+    <div class="attr">
+        <h1>attr属性绑定</h1>
+        <a data-bind="attr: {href: url, title: titleDetails}">獨照づ幔紗</a>
+
+    </div>
+</body>
+
+    <script type="text/javascript">
+        /*
+        * 这个Demo中演示多个属性绑定的方法方式
+        */
+
+        var viewModel = {
+            // visible属性的绑定
+            shouldShow: ko.observable(true),
+            showMessage: function () { this.shouldShow(true); },
+            hiddenMessage: function () { this.shouldShow(false); },
+
+            // text属性的绑定
+            pric: ko.observable(24.95),
+
+            // html属性的绑定
+            details: ko.observable(),
+
+            // css属性的绑定
+            currentProfit: ko.observable(-50),
+
+            // attr属性绑定
+            url: ko.observable("http://user.qzone.qq.com/277713359"),
+            titleDetails: ko.observable("This is my QZone.")
+        };
+
+        // 该字段跟随text属性的绑定例子
+        viewModel.priceRating = ko.dependentObservable(function () {
+            return this.pric() > 50 ? "expensive" : "affordable";
+        }, viewModel);
+
+        // 该字段跟随html属性的绑定例子
+        viewModel.details("<em>For further details, view the page <a href='http://user.qzone.qq.com/277713359'>here</a>.</em>");
+
+        ko.applyBindings(viewModel);
+    </script>
+</html>

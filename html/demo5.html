@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>demo5</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <div data-bind="template: 'eachTemplate'"></div>
+
+    <div class="add" style="float:left">
+        name: <input data-bind="value: anotherName" /> | type: <input data-bind="value: anotherType" />
+        <button data-bind="click: add">add</button>
+    </div>
+
+    <div class="oper">
+        <button data-bind="click: daleteLast">delete</button>
+    </div>
+
+    <script id="eachTemplate" type="text/x-jquery-tmpl">
+        {{each(i, data) anotherObservableArray}}
+        <table>
+            <tr>
+                <td>${anotherObservableArray()[i].name}</td>
+                <td>| ${anotherObservableArray()[i].type}</td>
+            </tr>
+        </table>
+        {{/each}}
+    </script>
+
+    <script type="text/javascript">
+        /*
+        * 演示了如何利用监控属性数组进行一个数组内容的监控与操作
+        */
+
+        /*
+        *   看下面的代码最容易混淆的也是最重要的一点是ko.observableArray所监控的内容, ko.observableArray实际上是监控一个数组内容, 而非监控一个ko.observable的数组.
+        * 可以更加灵活的理解为ko.observableArray监控他所拥有的对象数组, 无论这个对象数组是什么样的内容.
+        */
+        
+        // 声明一个数组监控, 并且赋初值
+        var anotherObservableArray = ko.observableArray([
+            { name: "Bungle", type: "Bear" },
+            { name: "George", type: "Hippo" },
+            { name: "Zippy", type: "Unknown" },
+            { name: "李向哲", type: "Unknown" }
+        ]);
+
+        /*
+        *   Knockout提供了很多替代JS自身数组操作的observableArray内置方法(注意, 是这个类的方法)来操作数组监控中所监控的数组内容,
+        * 下面列出了两个例子, 删除最末的和添加一个内容到最后.
+        *   关于其他的数组操作可参考如下域名中的内容: http://www.w3schools.com/jsref/jsref_obj_array.asp
+        */
+        var viewModel = {
+            anotherObservableArray: anotherObservableArray,
+
+            daleteLast: function () { this.anotherObservableArray.pop(); },
+
+            anotherName: ko.observable("default name"),
+            anotherType: ko.observable("default type"),
+            add: function () { this.anotherObservableArray.push({ name: this.anotherName(), type: this.anotherType() }); }
+        };
+
+        ko.applyBindings(viewModel);
+    </script>
+
+
+</body>
+</html>
