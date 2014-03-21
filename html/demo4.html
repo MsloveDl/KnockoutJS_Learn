@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>demo4</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <p>Enter a numeric value: <input data-bind="value: attemptedValue"/></p>
+    <div data-bind="visible: !lastInputWasValid()">That's not a number!</div>
+
+    <script type="text/javascript">
+        /*
+        * 演示了如何利用ko.dependentObservable进行客户端输入验证
+        */
+
+        var viewModel = {
+            acceptedNumericValue: ko.observable("你好"),
+            lastInputWasValid: ko.observable(true)
+        };
+
+        /*
+        *   这个例子相当于在input控件上使用了jQuery Validation和Number CSS. 传说中Knockout可以和jQuery Validation一起使用,
+        * 之后我会尝试些这样的一些例子出来. 
+        *   Knockout中所有的监控属性均绑定在相应DOM元素的change事件中, 有趣的是, Knockout已经自己实现了一套绑定和响应机制(其实就是在绑定的事件中回调自定义函数),
+        * 这个很有OOP中接口和多态的意思哦. 但是如果在JS引入的时候引入jQuery的库进来就会使用jQuery进行事件绑 定. 
+        *   那么这个监控属性绑定的流程就可以理解为
+        *       1. 当你声明监控属性绑定的时候, 将Knockout内置的setter和getter函数绑定在相关DOM元素的change事件上, 当然也有可能是你自己写的callback函数
+        *       2. 在事件绑定的同时, Knockout内部会构造一个数据结构, 用来保存所有需要getter的DOM元素的列表(也就是用来渲染内容的元素)
+        *       3. 当监控属性绑定的控件change事件被触发时, Knockout getter到change后的数据, 并且与原数据进行比对, 如果数据改变则顺着第2步中生成的DOM元素列表进行渲染
+        */
+        viewModel.attemptedValue = ko.dependentObservable({
+            read: viewModel.acceptedNumericValue,
+
+            write: function (value) {
+                if (isNaN(value)) {
+                    this.lastInputWasValid(false);
+                } else {
+                    this.lastInputWasValid(true);
+                    this.acceptedNumericValue(value);
+                }
+            },
+
+            owner: viewModel
+        });
+
+        ko.applyBindings(viewModel);
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>demo2</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmplPlus.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    This name is <span data-bind="text: personName"></span>
+
+    <script type="text/javascript">
+        /*
+        *demo2. 简单的ko.dependentObservable 依赖监控属性
+        */
+
+        var viewModel = {
+            firstName: ko.observable("李"),     
+            lastName: ko.observable("向哲")
+        };
+
+        /*****************************************************************************************************
+        *    ko.dependentObservable 代表依赖监控属性, 具体为什么叫这个名字, 我也没想明白.
+        *    但是通过如下例子可以知道, 当在依赖监控属性中使用到的监控变量有任意变化都会激活依赖监控属性.
+        *    这里需要注意的是, 依赖监控属性的建立必须在viewModel实体声明之外, 因为JS语言的特殊性, 在对象
+        * 声明的最初是不具有this属性或者变量的. 仅当此对象再次被使用的时候才会具有this值, 这也是为什么
+        * ko.observable需要以函数的形式出现, 因为JS中没有setter和getter的概念, 这个类似于Java中的属性方法.
+        * ko.dependentObservable的第二个传参代表了this指向的对象类型.
+        ******************************************************************************************************/
+        viewModel.personName = ko.dependentObservable(function () {
+            return this.firstName() + " " + this.lastName();
+        }, viewModel);
+
+        ko.applyBindings(viewModel);
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>demo3</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <p>First name: <span data-bind="text: firstName"></span></p>
+    <p>Last name: <span data-bind="text: lastName"></span></p>
+    <h2>Hello,
+        <input class="inputName" data-bind="value: fullName" />!</h2>
+
+    <script type="text/javascript">
+        /*
+        * 演示了ko.dependentObservable依赖监控属性如何进行监控属性的写操作
+        */
+
+
+        var viewModel = {
+            firstName: ko.observable("Planet"),
+            lastName: ko.observable("Earth")
+        };
+
+        /*
+        *   在这个例子中, 写操作的callback接收写入的值, 把值分离了出来, 分别写入到firstName和lastName中.
+        * 我们可以像普通情况中一样, 将viewModel绑定到DOM元素上.
+        *   当设定依赖监控属性时可有如下参数:
+        *       read - 必选, 一个用来执行去的依赖监控属性当前值的函数
+        *       write - 可选, 如果声明将使你的依赖监控属性可写, 别的代码如果这个可写功能写入新值, 通过自定义逻辑将值再写入各个基础的监控属性上
+        *       owner - 可选, 官方说是可选, 但是我认为是必须的, 不然代码中的tihs会没有意义, 如果声明, 它就是KO调用read或write的callback时用到的this
+        */
+        viewModel.fullName = ko.dependentObservable({
+
+            read: function () {
+                return this.firstName() + " " + this.lastName();
+            },
+
+            write: function (value) {
+                var lastSpacePos = value.lastIndexOf(" ");
+                if (lastSpacePos > 0) { 
+                    this.firstName(value.substring(0, lastSpacePos)); 
+                    this.lastName(value.substring(lastSpacePos + 1)); 
+                }
+            },
+            owner: viewModel
+        });
+
+        ko.applyBindings(viewModel);
+    </script>
+</body>
+</html>
