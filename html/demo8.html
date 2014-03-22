@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>demo8</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <!-- event的绑定和click如出一辙, 这里就只做一个简单的例子, 其他的属性是一模一样的, 可以参考demo7.html -->
+
+    <div>
+        <div data-bind="event: {mouseover: enableDetails, mouseout: disableDetails}">
+            Mouse over me
+        </div>
+
+        <div data-bind="visible: detailsEnabled">
+            Details
+        </div>
+    </div>
+</body>
+
+    <script type="text/javascript">
+        var viewModel = {
+            detailsEnabled: ko.observable(false),
+            enableDetails: function (event) {
+                this.detailsEnabled(true);
+            },
+            disableDetails: function () {
+                this.detailsEnabled(false);
+            }
+        };
+
+        ko.applyBindings(viewModel);
+    </script>
+</html>

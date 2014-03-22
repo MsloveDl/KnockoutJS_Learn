@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>demo11</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <p>User name: <input data-bind="value: userName, valueUpdate: 'keyup'"/></p>
+    <p>Password : <input type="password" data-bind="value: userPassword, valueUpdate: 'afterkeydown'"/></p>
+    <hr />
+    <p>User name: <span data-bind="text: userName"></span></p>
+    <p>Password : <span data-bind="text: userPassword"></span></p>
+    <hr />
+    <h3>双向属性</h3>
+    <p>input some content: <input data-bind="value: neek"/><button data-bind="click: neekBtn">Click me</button></p>
+</body>
+
+    <script type="text/javascript">
+        /*
+        * 通过value属性的绑定, 实现将用户输入写入viewModel中的功能
+        */
+
+        /*
+        *   通过对input标签value属性的绑定, 实现将用户输入内容实时写入到viewModel相应的属性, 默认情况下会在用户输入完毕跳出控件
+        * 的时候进行一次写入, 但是可以通过设定valueUpdate属性实现实时写入, 各属性值如下:
+        *    “change”（默认值） - 当失去焦点的时候更新view model的值，或者是<select> 元素被选择的时候。
+        *    “keyup” – 当用户敲完一个字符以后立即更新view model。
+        *    “keypress” – 当用户正在敲一个字符但没有释放键盘的时候就立即更新view model。不像 keyup，这个更新和keydown是一样的。
+        *    “afterkeydown” – 当用户开始输入字符的时候就更新view model。主要是捕获浏览器的keydown事件或异步handle事件。
+        *   如果足够细心, 可以发现在这个试验中, afterkeydown是最平滑的写入方式.
+        */
+        var viewModel = {
+            userName: ko.observable(""),
+            userPassword: ko.observable(""),
+
+            /*
+            *   如果你用value绑定将你的表单元素和你的observable属性关联起来，KO设置的2-way的双向绑定，任何一方改变都会更新另外一方的值。
+            *   但是，如果你的元素绑定的是一个non-observable属性（例如是一个原始的字符串或者JavaScript表达式） ,KO会这样执行：
+            *       如果你绑定的non-observable属性是简单对象，例如一个常见的属性值，KO会设置这个值为form表单元素的初始值，如果你改变form表单元素的值，
+            *     KO会将值重新写回到view mode的这个属性。但当这个属性自己改变的时候，元素却不会再变化了（因为不是observable的），所以它仅仅是1-way绑定。
+            *       如果你绑定的non-observable属性是复杂对象，例如复杂的JavaScript 表达式或者子属性，KO也会设置这个值为form表单元素的初始值，
+            *     但是改变form表单元素的值的时候，KO不会再写会view model属性，这种情况叫one-time-only value setter，不是真正的绑定。
+            */
+            neek: "someting",
+            neekBtn: function () {
+                alert(this.neek)
+            }
+        };
+
+        ko.applyBindings(viewModel);
+    </script>
+</html>

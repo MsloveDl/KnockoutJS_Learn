@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>demo7</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <div class="click">
+        <button data-bind="click: clickFunction">Click me</button>
+    </div>
+
+    <hr />
+    <div class="aClick" data-bind="click: divClick">
+        <a href="http://user.qzone.qq.com/277713359" data-bind="visible: isVisible, click: aClick">獨照づ幔紗</a>
+    </div>
+</body>
+
+    <script type="text/javascript">
+        /*
+        * 演示了Click属性绑定, 可以看出Click就是一个Action
+        */
+
+        // 显示和隐藏<a>标签, 并且通过传递进来的viewModels实体找到相关的隐藏属性
+        function visible_a(event, viewModels) {
+            viewModels.isVisible(!viewModels.isVisible());
+            alert(className);
+        };
+
+        var viewModel = {
+            isVisible: ko.observable(false),
+
+            /*
+            *   click属性的绑定会阻止元素本身的默认事件, 如<a>标签或者<button>标签, 如果想要继续事件的冒泡, 可以在函数的
+            * 结尾返回true值. 试试看.
+            */
+            aClick: function (event) {
+                alert("这个Click事件的绑定阻止了正常的JS事件冒泡, 你讲不能够打开这个<a>标签的URL.");
+                return true;
+            },
+
+            /*
+            *   但是这奇葩的click属性却会向绑定属性元素的父元素冒泡事件, 也就是说如果绑定元素的父元素具有click事件, 那么会被
+            * 冒泡后的事件触发, 要不要这么复杂...... 如果希望拦截事件冒泡, 那么可以在拦截点增加[clickBubble: false]属性.
+            *   You can try is.
+            */
+            divClick: function (event) {
+                alert("当父元素具有click属性的时候, 会冒泡出来哦! 这显然和<a>标签中的防止冒泡不一样.")
+            },
+
+            /*
+            *   通过给DOM元素绑定Click属性给以给任意元素添加Click事件, 并且可以通过传递function包装的方式传递想要传递的参数.
+            * 但是无论何时都不要忘记第一个传入的参数必须是event. 另外当需要进行viewModel操作的时候不妨把viewModel的引用传入, 
+            * 不然是无法操作正确的, 因为function在JS中是函数, 不属于任何对象, 仅当他们被某个对象调用的时候才会成为方法, 拥有
+            * this的能力.
+            */
+            clickFunction: function (event) {
+                visible_a(event, this);
+            }
+        };
+
+        ko.applyBindings(viewModel);
+    </script>
+</html>

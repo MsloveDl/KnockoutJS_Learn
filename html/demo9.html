@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>demo9</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <form action="http://www.baidu.com", method="get", data-bind="submit: doSomething">
+        随便输入些什么: <input type="text: message"/>
+        <button type="">Submit</button>
+    </form>
+</body>
+
+    <script type="text/javascript">
+        /*
+        * 可以在form上单独绑定submit哦, 虽然也可以通过绑定click实现. 是吧, 洋洋同学.
+        */
+
+        /*
+        *   同click和event一样, 绑定后呢会组织默认事件的冒泡, 也就是说会执行自定义的submit事件, 而通过form属性设定的将不再执行.
+        * 就如例子中, 如果没有绑定submit事件应该会访问form中设定的action, 但是在绑定后却不会去执行.
+        *   submit默认的参数会将form中的元素打包成array传入, 当然是元素的Node对象. 需要去value取值.
+        */
+        var viewModel = {
+            doSomething: function (formElement) {
+                alert(formElement[0].value);
+            }
+        };
+
+        ko.applyBindings(viewModel);
+    </script>
+</html>
