@@ -9,6 +9,69 @@
     <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
 </head>
 <body>
+    <!-- 演示Checkbox绑定数组的案例 -->
+    <div class="checkbox" style="border:solid 2px; padding-bottom: 10px">
+        <h1>将Checkbox关联到数组</h1>
+        <p>选择我的兴趣: <input type="checkbox" data-bind="checked: isInterest"/></p>
+        <div data-bind="visible: isInterest">
+            可选兴趣:
+            <div><input type="checkbox" value="足球" data-bind="checked: interestArray"/>足球</div>
+            <div><input type="checkbox" value="篮球" data-bind="checked: interestArray"/>篮球</div>
+            <div><input type="checkbox" value="乒乓球" data-bind="checked: interestArray"/>乒乓球</div>
+            <div><input type="checkbox" value="电子竞技" data-bind="checked: interestArray"/>电子竞技</div>
+        </div>
+        <hr />
+        <div class="display_content">
+            已经选择的兴趣:
+            <div data-bind="template: 'choosen'"></div>
+            <script type="text/x-jquery-tmpl" id="choosen">
+                {{each(i, item) interestArray}}
+                <div><span>${viewModel.interestArray()[i]}</span></div>
+                {{/each}}
+            </script>
+        </div>
+    </div>
+    <!-- 演示Checkbox绑定数组的案例 -->
 
+    <!-- 演示RadioButton绑定数组的案例 -->
+    <div class="radio" style="border:solid 2px; padding-bottom: 10px">
+        <h1>将Radiobutton关联到viewModel</h1>
+        <p>选择我的性别:</p>
+        <div>
+            <input type="radio" name="sexGroup" value="男" data-bind="checked: sex"/>男
+            <input type="radio" name="sexGroup" value="女" data-bind="checked: sex"/>女
+        </div>
+        <hr />
+        <p>我选择的是: </p>
+        <div><span data-bind="text: sex"></span></div>
+    </div>
+     <!-- 演示RadioButton绑定数组的案例 -->
 </body>
+
+    <script type="text/javascript">
+        /*
+        * 演示如何进行Checkbox和RadioButton的绑定, 有些技巧可以取
+        */
+
+        // 用于Chekbox演示的数据源
+        var interestStore = [
+            "足球"
+        ];
+        var interestArray = ko.observableArray(interestStore);
+
+        var viewModel = {
+            /*
+            *   对于Checkbox和RadioButton控件, 如果绑定的是一个数组元素, 则会将是否选中与数组中的元素进行关联, 如果选中则会在数组中增加该元素,
+            * 一旦取消选中则会从数组中将这个元素剔除. 而增加和删除的值是控件元素的value值.
+            *   当使用Checkbox和RadioButton控件的时候, 个人建议使用双向绑定进行viewModel和view之间的绑定, 可以很方便的动态生成和维护控件数量.
+            */
+            isInterest: ko.observable(false),
+            interestArray: interestArray,
+
+            // radio演示
+            sex: ko.observable("男")
+        };
+
+        ko.applyBindings(viewModel);
+    </script>
 </html>

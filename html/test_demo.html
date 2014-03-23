@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>demo12</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <div data-bind="template: 'eachTemplate'"></div>
+    <hr />
+    <div data-bind="template: 'eachResult'"></div>
+    <hr />
+    <p>合计: <span data-bind="text: total"></span>元</p>
+
+    <script id="eachTemplate" type="text/x-jquery-tmpl">
+        {{each(i, data) commodityArray}}
+        <table>
+            <tr>
+                <td>${commodityArray()[i].name}</td>
+                <td><button data-bind="click: clickCheck" value="${i}">${commodityArray()[i].price}</button></td>
+            </tr>
+        </table>
+        {{/each}}
+    </script>
+
+    <script id="eachResult" type="text/x-jquery-tmpl">
+        {{each(i, data) resultArray}}
+        <table>
+            <tr>
+                <td>${resultArray()[i].name}</td>
+                <td>$${resultArray()[i].price}</td>
+            </tr>
+        </table>
+        {{/each}}
+    </script>
+
+    <script type="text/javascript">
+        var dataStore = [
+            { name: "西红柿鸡蛋盖饭", price: "8", id: "0"},
+            { name: "青椒肉丝盖饭", price: "10", id: "1" },
+            { name: "土豆丝盖饭", price: "8", id: "2" },
+            { name: "麻婆豆腐盖饭", price: "8", id: "3" },
+            { name: "土豆丝炒饼", price: "8", id: "4" },
+            { name: "蛋炒饼", price: "8", id: "5" },
+            { name: "肉炒饼", price: "10", id: "6" }
+        ];
+        var commodityArray = ko.observableArray(dataStore);
+
+        function addContent(data, event) {
+            var indexOf = event.target.value;
+            var temp = viewModel.commodityArray()[indexOf];
+            viewModel.resultArray.push(temp);
+
+            viewModel.total(Number(viewModel.total()) + Number(temp["price"]));
+        };
+        //-------------------------------------------------------------
+        var dataResult = [
+        ];
+        var resultArray = ko.observableArray(dataResult);
+
+        //--------------------------------------------------------------
+        var viewModel = {
+            commodityArray: commodityArray,
+            resultArray: resultArray,
+            clickCheck: addContent,
+            total: ko.observable(0)
+        };
+
+        ko.applyBindings(viewModel);
+    </script>
+</body>
+</html>
