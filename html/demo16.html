@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>demo16</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <p>Name: <input data-bind="hasfocus: editingName"/></p>
+    <div data-bind="visible: editingName">You're editing the name</div>
+    <button data-bind="enable: !editingName(), click: function () { editingName(true) }">Edit name</button>
+
+    <script type="text/javascript">
+        /*
+        * 验证DOM对HTML事件的覆盖
+        */
+        
+        /*
+        *   我们已经知道了如何使用init和update回调, 也知道当observable内容改变的时候会更新相关的DOM元素. 但是其他形式的该怎么做呢 ?
+        * 比如当用户对某个DOM元素有某些action操作的时候, 如何更新相关的obervable内容呢 ?
+        */
+        ko.bindingHandlers.hasFocus = {
+            /*
+            *   我们可以在init callback中注册事件句柄, 这样就可以改变相关你的observable的内容了
+            *   通过对hasFocus绑定来读取或写入一个observable的内容
+            */
+            init: function (element, valueAccessor) {
+                $(element).focus(function () {
+                    var value = valueAccessor();
+                    value(true);
+                });
+
+                $(element).blur(function () {
+                    var value = valueAccessor();
+                    value(false);
+                });
+            },
+
+            update: function (element, valueAccessor) {
+                var value = valueAccessor();
+
+                if (ko.utils.unwrapObservable(value)) {
+                    element.focus();
+                } else {
+                    element.blur();
+                }
+            }
+        };
+
+        var viewModel = {
+            editingName: ko.observable()
+        };
+
+        ko.applyBindings(viewModel);
+    </script>
+</body>
+</html>

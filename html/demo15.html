@@ -9,11 +9,34 @@
     <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
 </head>
 <body>
-    <div data-bind="slideVisible: true, slideDuration: duration">You have selected the option</div>
-    <label><input type="checkbox" data-bind="checked: giftWrap"/>Gift Wrap</label>
+    <div data-bind="slideVisible: isVisible, slideDuration: duration">You have selected the option</div>
+    <label><input type="checkbox" data-bind="checked: isVisible"/>Gift Wrap</label>
 
     <script type="text/javascript">
+        /*
+        * Knockout支持自定义绑定, 这次来看看自定义绑定如何创建
+        */
+        
+        /*
+        *   自定义绑定是通过ko.bindingHandlers来进行注册的, 内部有两个必须实现的callback, 可以理解成虚基类要求必须时间的函数吧`
+        * init(初始化)和update(更新). 当然这里两个callback不需要一起实现, 实现自己用得到的就可以了.
+        *   Knockout在DOM元素使用自定义绑定的是偶会调用你的init函数, 在这个时候init实现了两个主要功能:
+        *       1. 为DOM元素设定初始值;
+        *       2. 注册事件句柄, 例如当用户点击或者编辑DOM元素的时候, 可以改变相关的observable值的内容.
+        *   init函数定义了如下参数:
+        *       element — 使用这个绑定的DOM元素
+        *       valueAccessor —JavaScript函数，通过valueAccessor()可以得到应用到这个绑定的model上的当前属性值。
+        *       allBindingsAccessor —JavaScript函数，通过allBindingsAccessor ()得到这个元素上所有model的属性值。
+        *       viewModel — 传递给ko.applyBindings使用的 view model参数，如果是模板内部的话，那这个参数就是传递给该模板的数据。
+        *
+        *   update回调则在observable的内容被改变的时候进行调用. 传递参数内容与init函数一样, 主要功能则是Render相关的DOM元素.
+        */
         ko.bindingHandlers.slideVisible = {
+            init: function (element, valueAccessor) {
+                var value = ko.utils.unwrapObservable(valueAccessor());
+                $(element).slideUp(500);
+            },
+
             update: function (element, valueAccessor, allBindingsAccessor) {
                 var value = valueAccessor(),
                     allBindings = allBindingsAccessor();
@@ -29,7 +52,8 @@
         };
 
         var viewModel = {
-            duration: ko.observable(1000)
+            isVisible: ko.observable(false),
+            duration: ko.observable(500)
         };
 
         ko.applyBindings(viewModel);

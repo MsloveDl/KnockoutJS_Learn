@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>demo17</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <div data-bind="text: message"></div>
+
+    <script type="text/javascript">
+        /*
+        * 将viewModel转换成JSON字符串
+        */
+
+        /*
+        *   在现代Web编程中, JSON越来越常用, 当我们和服务器端进行AJAX的时候需要将viewMode进行类似对象的操作, 
+        * Knockout提供了两个很便利的函数, toJS()和toJSON().
+        *   toJS()将viewModel转换为很容易操作的JS Object, 解决了observable等属性读取值复杂的问题.
+        *   toJSON()则直接将viewModel序列化为JSON字符串, 而且使用浏览器本身支持的方法, 具有很高的转化性能.
+        */
+        var viewModel = {
+            firstName: ko.observable("Lee"),
+            LastName: ko.observable("Xiang"),
+            pets: ko.observableArray(["cat", "dog", "fish"]),
+            type: "Customer"
+        };
+
+        viewModel.hasAlotOfPets = ko.dependentObservable(function () {
+            return this.pets().length > 2;
+        }, viewModel);
+
+        var jsonData = ko.toJSON(viewModel);
+
+        viewModel.message = jsonData;
+
+        ko.applyBindings(viewModel);
+    </script>
+</body>
+</html>
