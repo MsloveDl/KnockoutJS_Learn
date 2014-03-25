@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>demo13</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <div>
+        <p>
+            Your country:
+            <select data-bind="options: availableCountries,
+    optionsText: function (item) { return 'name: ' + item.countryName + ' & pop: ' + item.countryPopulation },
+                    value: selectedCountry,
+                    optionsCaption: 'Choose...'"></select>
+        </p>
+    </div>
+
+    <div data-bind="visible: selectedCountry">
+        You have chosen a country with population
+        <span data-bind="text: selectedCountry() ? selectedCountry().countryPopulation : 'unkown'"></span>
+    </div>
+</body>
+
+    <script type="text/javascript">
+        /*
+        * 演示了options绑定功能的实现
+        */
+
+        /*
+        *   options可以绑定任意类型的值, 在这个例子中, 我们绑定了对象类型为country的值, 也绑定了function的值.
+        *   options直接绑定一个数组(也可以是ko.observableArray属性)作为数据源, 并且会自动将内容进行绑定, 选择结果存放在
+        * value中, 通过获取value值可以知道用户选择的是哪一项进行反馈. 如果绑定数据源中的item是string类型则不需要继续声明
+        * optionText属性和optionValue属性.
+        *   options具有如下参数:
+        *       optionsCaption
+        *       默认情况下显示的内容, 也可以理解是当不做任何选择的时候显示的默认内容
+        *       optionsText
+        *       当绑定对象的item不是字符串时, 需要设定optionsText属性来指定<select>显示的内容
+        *       optionsValue
+        *       这个参数和optionsText类似, 这个设定将会作为<option>的value值出现
+        *       selectedOptions
+        *       对于multi-select李彪, 可以使用selectedOptions读取和设置多个选择项. 不过从技术上看来, 他是一个单独绑定.
+        */
+        var country = function (name, population) {
+            this.countryName = name;
+            this.countryPopulation = population;
+        };
+
+        var viewModel = {
+            availableCountries: ko.observableArray([
+                new country("UK", 6500000),
+                new country("USA", 32000000),
+                new country("Sweden", 29000000),
+                new country("CN", 13000000000)
+            ]),
+            selectedCountry: ko.observable()
+        };
+
+        ko.applyBindings(viewModel);
+    </script>
+</html>

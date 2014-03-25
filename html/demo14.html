@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>demo14</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <div>
+        <p>
+            Choose some countries you'd like to visit:
+            <select data-bind="options: availableCountries, selectedOptions: choosenCountries" size="5" multiple="true"></select>
+        </p>
+    </div>
+    <hr />
+    <div data-bind="template: 'eachChoosen'"></div>
+
+    <script type="text/x-jquery-tmpl" id="eachChoosen">
+        <ul>
+            Choosen countries:
+        {{each(i, item) choosenCountries}}
+            <li>${choosenCountries()[i]}</li>
+        {{/each}}
+        </ul>
+    </script>
+
+    <script type="text/javascript">
+        /*
+        * 演示了一个selectedOptions(多列选择)的绑定功能
+        * 这个实在不知道有什么可需要解释的. 就这样看例子好了
+        */
+
+        var viewModel = {
+            availableCountries: ko.observableArray(['China', 'France', 'Germany', 'Japan', 'Spain', 'Amarecan']),
+            choosenCountries: ko.observableArray([])
+        };
+
+        ko.applyBindings(viewModel);
+    </script>
+</body>
+</html>

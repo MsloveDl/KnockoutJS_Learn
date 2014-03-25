@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>demo15</title>
+
+    <script type="text/javascript" src="../js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="../js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="../js/knockout-3.0.0.debug.js"></script>
+</head>
+<body>
+    <div data-bind="slideVisible: true, slideDuration: duration">You have selected the option</div>
+    <label><input type="checkbox" data-bind="checked: giftWrap"/>Gift Wrap</label>
+
+    <script type="text/javascript">
+        ko.bindingHandlers.slideVisible = {
+            update: function (element, valueAccessor, allBindingsAccessor) {
+                var value = valueAccessor(),
+                    allBindings = allBindingsAccessor();
+                var valueUnwrapped = ko.utils.unwrapObservable(value);
+                var duration = allBindings.slideDuration || 400;
+
+                if (valueUnwrapped == true) {
+                    $(element).slideDown(duration);
+                } else {
+                    $(element).slideUp(duration);
+                }
+            }
+        };
+
+        var viewModel = {
+            duration: ko.observable(1000)
+        };
+
+        ko.applyBindings(viewModel);
+    </script>
+</body>
+</html>
